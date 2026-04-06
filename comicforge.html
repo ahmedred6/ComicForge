@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComicForge</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0: #0a0a0f;
+  --bg1: #111118;
+  --bg2: #18181f;
+  --bg3: #22222c;
+  --bg4: #2a2a36;
+  --accent: #e8c547;
+  --accent2: #ff6b35;
+  --accent3: #7b6cff;
+  --text0: #f0eee8;
+  --text1: #b8b5a8;
+  --text2: #6e6b62;
+  --text3: #3a3835;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --danger: #ff4545;
+  --success: #3ecf8e;
+  --r: 8px;
+  --rl: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg0);
+  color: var(--text0);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* SCROLLBARS */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 52px;
+  display: flex; align-items: center;
+  padding: 0 20px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 2px;
+  color: var(--text0);
+  margin-right: 32px;
+  line-height: 1;
+}
+.logo em { color: var(--accent); font-style: normal; }
+
+.nav { display: flex; gap: 2px; flex: 1; }
+.nav-btn {
+  padding: 6px 16px;
+  border-radius: var(--r);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-btn .nb-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  background: var(--bg3);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--text2);
+}
+.nav-btn:hover { background: var(--bg3); color: var(--text1); }
+.nav-btn.active {
+  background: var(--bg3);
+  color: var(--text0);
+}
+.nav-btn.active .nb-num { background: var(--accent); color: var(--bg0); }
+
+.topbar-right { display: flex; gap: 8px; align-items: center; }
+.btn-settings {
+  padding: 6px 14px; border-radius: var(--r);
+  font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text1);
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px;
+}
+.btn-settings:hover { background: var(--bg3); color: var(--text0); border-color: var(--border2); }
+
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── MAIN LAYOUT ── */
+.app { display: flex; flex-direction: column; height: 100vh; }
+.main { flex: 1; display: flex; overflow: hidden; }
+
+/* ── PAGES ── */
+.page { display: none; flex: 1; overflow: hidden; }
+.page.active { display: flex; }
+
+/* ── PANELS ── */
+.panel {
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg1);
+}
+.panel + .panel { border-left: 1px solid var(--border); }
+
+.panel-hd {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; gap: 8px;
+}
+.panel-hd-title {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--text2);
+}
+.panel-body { flex: 1; overflow-y: auto; padding: 12px; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding: 7px 14px; border-radius: var(--r);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.2px;
+  cursor: pointer; border: 1px solid var(--border2);
+  background: transparent; color: var(--text1);
+  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg3); color: var(--text0); }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent); color: var(--bg0);
+  border-color: transparent; font-weight: 600;
+}
+.btn-primary:hover { background: #f0d060; color: var(--bg0); }
+
+.btn-accent2 {
+  background: var(--accent2); color: white;
+  border-color: transparent; font-weight: 600;
+}
+.btn-accent2:hover { background: #ff8555; }
+
+.btn-danger { color: var(--danger); border-color: rgba(255,69,69,0.25); }
+.btn-danger:hover { background: rgba(255,69,69,0.1); }
+
+.btn-full { width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px; }
+.btn-full.btn-generate {
+  padding: 12px; font-size: 13px; border-radius: var(--rl);
+  font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;
+  font-size: 16px; font-weight: 400;
+}
+
+.icon-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  border: none; background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 12px; transition: all 0.15s;
+}
+.icon-btn:hover { background: var(--bg3); color: var(--text0); }
+
+/* ── BADGES ── */
+.badge {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
+  padding: 3px 7px; border-radius: 4px; text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+.badge-yellow { background: rgba(232,197,71,0.15); color: var(--accent); }
+.badge-orange { background: rgba(255,107,53,0.15); color: var(--accent2); }
+.badge-purple { background: rgba(123,108,255,0.15); color: var(--accent3); }
+.badge-green { background: rgba(62,207,142,0.15); color: var(--success); }
+
+/* ── INPUTS ── */
+input, textarea, select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text0);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 8px 12px;
+  transition: border-color 0.15s;
+  outline: none;
+}
+input:focus, textarea:focus, select:focus { border-color: rgba(232,197,71,0.4); }
+input::placeholder, textarea::placeholder { color: var(--text3); }
+select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236e6b62'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+select option { background: var(--bg2); }
+textarea { resize: vertical; line-height: 1.6; }
+
+/* ── SECTION LABELS ── */
+.section-lbl {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text3);
+  padding: 10px 12px 6px;
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* ══════════════════════════
+   PAGE 1 — JSON BUILDER
+══════════════════════════ */
+.ai1-layout { display: flex; width: 100%; }
+.ai1-left { width: 260px; flex-shrink: 0; }
+.ai1-center { flex: 1; }
+.ai1-right { width: 360px; flex-shrink: 0; }
+
+/* JSON Library */
+.cat-group { margin-bottom: 4px; }
+.cat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 8px; border-radius: var(--r);
+  cursor: pointer; transition: background 0.12s;
+}
+.cat-header:hover { background: var(--bg2); }
+.cat-header-name {
+  font-size: 11px; font-weight: 600; color: var(--text1);
+  display: flex; align-items: center; gap: 6px;
+}
+.cat-toggle { font-size: 9px; color: var(--text2); transition: transform 0.15s; }
+.cat-toggle.open { transform: rotate(90deg); }
+.cat-count { font-family: 'JetBrains Mono'; font-size: 9px; color: var(--text3); }
+.cat-items { padding: 2px 0 4px 8px; display: flex; flex-direction: column; gap: 2px; }
+
+.json-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: var(--r);
+  cursor: grab; border: 1px solid transparent;
+  transition: all 0.12s; position: relative;
+}
+.json-chip:hover { background: var(--bg3); border-color: var(--border); }
+.json-chip.active-chip { background: var(--bg3); border-color: rgba(232,197,71,0.3); }
+.json-chip-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+  background: var(--bg4); border: 1px solid var(--border);
+}
+.json-chip.always-chip .json-chip-icon { background: rgba(232,197,71,0.12); border-color: rgba(232,197,71,0.25); }
+.json-chip-info { flex: 1; min-width: 0; }
+.json-chip-name { font-size: 12px; font-weight: 500; color: var(--text0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.json-chip-sub { font-size: 10px; color: var(--text2); }
+.json-chip-acts { display: flex; gap: 2px; opacity: 0; transition: opacity 0.12s; }
+.json-chip:hover .json-chip-acts { opacity: 1; }
+.always-star { color: var(--accent); font-size: 11px; }
+.btn-add-cat {
+  width: calc(100% - 0px); margin: 4px 0;
+  padding: 7px 10px; border-radius: var(--r);
+  border: 1px dashed var(--border2);
+  background: transparent; color: var(--text2);
+  font-size: 11px; cursor: pointer; text-align: left;
+  transition: all 0.12s; font-family: 'DM Sans', sans-serif;
+}
+.btn-add-cat:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,197,71,0.05); }
+
+/* Type pills */
+.type-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.type-pill {
+  padding: 4px 11px; border-radius: 20px;
+  font-size: 11px; font-weight: 500; cursor: pointer;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text2); transition: all 0.12s; letter-spacing: 0.2px;
+}
+.type-pill:hover { border-color: var(--accent); color: var(--accent); }
+.type-pill.active { background: var(--accent); color: var(--bg0); border-color: var(--accent); }
+
+/* Chat */
+.chat-area {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.chat-msg {
+  max-width: 82%; padding: 10px 14px;
+  border-radius: 12px; font-size: 13px; line-height: 1.55;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: var(--accent); color: var(--bg0);
+  border-bottom-right-radius: 3px; font-weight: 500;
+}
+.chat-msg.ai {
+  align-self: flex-start;
+  background: var(--bg3); color: var(--text0);
+  border-bottom-left-radius: 3px;
+  border: 1px solid var(--border);
+}
+.chat-msg.sys {
+  align-self: center; background: none;
+  font-size: 11px; color: var(--text2); text-align: center;
+}
+.chat-input-area {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.chat-input-row { display: flex; gap: 8px; margin-top: 10px; }
+.chat-textarea {
+  flex: 1; padding: 10px 12px;
+  border-radius: var(--r);
+  background: var(--bg2); border: 1px solid var(--border);
+  font-size: 13px; color: var(--text0);
+  resize: none; line-height: 1.5;
+  min-height: 60px;
+}
+.chat-textarea:focus { border-color: rgba(232,197,71,0.4); }
+.chat-textarea::placeholder { color: var(--text3); }
+
+/* JSON right panel */
+.json-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.json-editor-wrap {
+  flex: 1; overflow: hidden;
+  background: var(--bg0);
+  position: relative;
+}
+.json-editor {
+  width: 100%; height: 100%; padding: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: #e2c97e;
+  background: transparent; border: none;
+  outline: none; resize: none; line-height: 1.7;
+}
+.json-editor::placeholder { color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; }
+.json-right-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* loading animation */
+.loading-dots { display: flex; gap: 5px; align-items: center; padding: 4px 0; }
+.ld { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.3; animation: ld 1.2s ease-in-out infinite; }
+.ld:nth-child(2) { animation-delay: 0.2s; }
+.ld:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ld { 40% { opacity: 1; transform: scale(1.2); } }
+
+/* ══════════════════════════
+   PAGE 2 — ASSET STUDIO
+══════════════════════════ */
+.ai2-layout { display: flex; width: 100%; }
+.ai2-left { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; }
+.ai2-right { flex: 1; display: flex; flex-direction: column; }
+
+.gen-form { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text2); }
+.form-input, .form-select, .form-textarea { width: 100%; }
+
+.json-picker-list { display: flex; flex-direction: column; gap: 3px; max-height: 180px; overflow-y: auto; }
+.json-pick-row {
+  padding: 7px 10px; border-radius: var(--r);
+  border: 1px solid transparent;
+  font-size: 12px; cursor: pointer; display: flex;
+  align-items: center; gap: 8px; transition: all 0.12s;
+  color: var(--text1);
+}
+.json-pick-row:hover { background: var(--bg3); border-color: var(--border); }
+.json-pick-row.selected { background: rgba(232,197,71,0.08); border-color: rgba(232,197,71,0.3); color: var(--accent); }
+
+.gen-footer { padding: 14px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.progress-wrap { margin-top: 10px; }
+.progress-track { height: 3px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
+.gen-status { font-size: 11px; color: var(--text2); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+
+/* Asset gallery */
+.cat-tab-row { padding: 10px 14px 0; display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+.cat-tab {
+  padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  cursor: pointer; border: 1px solid transparent;
+  background: transparent; color: var(--text2); transition: all 0.12s;
+  margin-bottom: 10px;
+}
+.cat-tab:hover { color: var(--text0); }
+.cat-tab.active { background: rgba(232,197,71,0.1); border-color: rgba(232,197,71,0.3); color: var(--accent); }
+
+.asset-grid {
+  flex: 1; overflow-y: auto;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px; padding: 14px; align-content: start;
+}
+.asset-card {
+  border-radius: var(--rl); border: 1px solid var(--border);
+  background: var(--bg2); overflow: hidden;
+  cursor: pointer; transition: all 0.15s;
+}
+.asset-card:hover { border-color: rgba(232,197,71,0.3); transform: translateY(-1px); }
+.asset-thumb {
+  aspect-ratio: 1; background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+}
+.asset-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.asset-info { padding: 10px 12px; }
+.asset-name { font-size: 12px; font-weight: 600; color: var(--text0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.asset-meta { font-size: 10px; color: var(--text2); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+.spinner { width: 22px; height: 22px; border: 2px solid var(--bg4); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state { grid-column: 1/-1; padding: 48px 24px; text-align: center; color: var(--text2); }
+.empty-ico { font-size: 32px; margin-bottom: 10px; opacity: 0.5; }
+.empty-txt { font-size: 12px; line-height: 1.6; }
+
+/* ══════════════════════════
+   PAGE 3 — SCENE FORGE
+══════════════════════════ */
+.ai3-layout { display: flex; width: 100%; }
+.ai3-left { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ai3-center { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.ai3-right { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Asset panel items */
+.ai3-asset {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 12px; cursor: grab; transition: background 0.12s;
+  border-radius: var(--r); margin: 1px 6px;
+}
+.ai3-asset:hover { background: var(--bg3); }
+.ai3-thumb {
+  width: 34px; height: 34px; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; overflow: hidden; flex-shrink: 0;
+}
+.ai3-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.ai3-name { font-size: 12px; color: var(--text1); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai3-auto-badge {
+  font-size: 9px; padding: 2px 5px; border-radius: 3px;
+  background: rgba(232,197,71,0.15); color: var(--accent);
+  font-weight: 600; letter-spacing: 0.5px;
+}
+
+/* Prompt builder */
+.prompt-section {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.prompt-box {
+  min-height: 110px; padding: 10px 12px;
+  border-radius: var(--rl); border: 1px solid var(--border);
+  background: var(--bg0);
+  display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start;
+  cursor: text; transition: border-color 0.15s;
+}
+.prompt-box:focus-within { border-color: rgba(232,197,71,0.35); }
+.prompt-box.dragover { border-color: var(--accent); background: rgba(232,197,71,0.04); }
+
+.p-token {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px; border-radius: 20px; font-size: 11px;
+  font-weight: 500; user-select: none; flex-shrink: 0;
+  cursor: default;
+}
+.p-token.t-json { background: rgba(123,108,255,0.15); color: #a89dff; border: 1px solid rgba(123,108,255,0.25); }
+.p-token.t-img { background: rgba(62,207,142,0.12); color: #3ecf8e; border: 1px solid rgba(62,207,142,0.2); }
+.p-token.t-auto { background: rgba(232,197,71,0.12); color: var(--accent); border: 1px solid rgba(232,197,71,0.25); }
+.p-token-rm { cursor: pointer; opacity: 0.5; font-size: 10px; line-height: 1; }
+.p-token-rm:hover { opacity: 1; }
+
+.p-text-input {
+  border: none; background: transparent; font-size: 13px;
+  color: var(--text0); flex: 1; min-width: 140px;
+  padding: 2px 0; font-family: 'DM Sans', sans-serif;
+}
+.p-text-input::placeholder { color: var(--text3); }
+.p-text-input:focus { outline: none; }
+
+.prompt-opts { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+.drop-hint-bar {
+  margin: 0 14px 10px;
+  padding: 7px 12px; border-radius: var(--r);
+  border: 1px dashed var(--border);
+  font-size: 11px; color: var(--text2); text-align: center;
+}
+
+/* Scene grid */
+.scene-grid-wrap { flex: 1; overflow-y: auto; }
+.scene-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px; padding: 14px; align-content: start;
+}
+.scene-card {
+  border-radius: var(--rl); border: 1px solid var(--border);
+  background: var(--bg2); overflow: hidden; cursor: pointer;
+  transition: all 0.15s;
+}
+.scene-card:hover { border-color: rgba(255,107,53,0.3); transform: translateY(-1px); }
+.scene-thumb-wrap { aspect-ratio: 16/9; background: var(--bg3); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+.scene-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.scene-body { padding: 9px 11px; }
+.scene-preview { font-size: 11px; color: var(--text1); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.scene-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.s-tag { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600; letter-spacing: 0.3px; }
+.s-tag.j { background: rgba(123,108,255,0.15); color: #a89dff; }
+.s-tag.i { background: rgba(62,207,142,0.12); color: #3ecf8e; }
+.scene-date { font-size: 9px; color: var(--text2); margin-top: 5px; font-family: 'JetBrains Mono', monospace; }
+
+/* Scene detail */
+.detail-img { width: 100%; border-radius: var(--r); margin-bottom: 14px; }
+.detail-section { margin-bottom: 14px; }
+.detail-lbl { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; }
+.detail-text { font-size: 12px; color: var(--text1); line-height: 1.6; }
+
+/* ══════════════════════════
+   MODALS
+══════════════════════════ */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: none; align-items: center; justify-content: center;
+  z-index: 200; backdrop-filter: blur(4px);
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--bg2); border-radius: var(--rl);
+  border: 1px solid var(--border2);
+  padding: 24px; width: 420px; max-width: 92vw;
+}
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 1.5px;
+  color: var(--text0); margin-bottom: 20px;
+}
+.modal-field { margin-bottom: 14px; }
+.modal-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text2); margin-bottom: 5px; display: block; }
+.modal-input { width: 100%; }
+.modal-hint { font-size: 11px; color: var(--text2); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+
+.modal-wide { width: 560px; }
+.json-edit-ta { width: 100%; min-height: 240px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #e2c97e; }
+
+/* ── STATUSBAR ── */
+.statusbar {
+  height: 26px; display: flex; align-items: center;
+  padding: 0 16px; border-top: 1px solid var(--border);
+  background: var(--bg0); flex-shrink: 0;
+  font-size: 11px; color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  gap: 12px;
+}
+.sb-item { display: flex; align-items: center; gap: 5px; }
+
+/* ── ACCENT LINE ── */
+.accent-line { height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="accent-line"></div>
+
+  <div class="topbar">
+    <div class="logo">Comic<em>Forge</em></div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="switchPage('ai1', this)">
+        <span>JSON Builder</span>
+        <span class="nb-num">AI·1</span>
+      </button>
+      <button class="nav-btn" onclick="switchPage('ai2', this)">
+        <span>Asset Studio</span>
+        <span class="nb-num">AI·2</span>
+      </button>
+      <button class="nav-btn" onclick="switchPage('ai3', this)">
+        <span>Scene Forge</span>
+        <span class="nb-num">AI·3</span>
+      </button>
+    </nav>
+    <div class="topbar-right">
+      <div class="status-dot" id="status-dot"></div>
+      <button class="btn-settings" onclick="openSettings()">⚙ Settings</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ═══ PAGE 1: JSON BUILDER ═══ -->
+    <div class="page active" id="page-ai1">
+      <div class="ai1-layout" style="width:100%">
+
+        <!-- Library -->
+        <div class="panel ai1-left">
+          <div class="panel-hd">
+            <span class="panel-hd-title">JSON Library</span>
+            <button class="btn" onclick="openAddCat()" style="font-size:11px;padding:4px 10px;">+ Category</button>
+          </div>
+          <div class="panel-body" style="padding:8px;">
+            <div class="section-lbl">Always-On</div>
+            <div id="ao-list"></div>
+            <div class="divider"></div>
+            <div id="cat-list"></div>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="panel ai1-center" style="display:flex;flex-direction:column;">
+          <div class="panel-hd">
+            <span class="panel-hd-title">AI JSON Generator</span>
+            <span class="badge badge-yellow" id="ai1-model-badge">GPT-4o</span>
+          </div>
+          <div class="chat-area" id="chat-area">
+            <div class="chat-msg sys">Describe a character, asset, style, or location.<br>The AI will generate a structured JSON definition.</div>
+          </div>
+          <div class="chat-input-area">
+            <div class="type-pills" id="type-pills">
+              <button class="type-pill active" data-type="character" onclick="selType(this)">Character</button>
+              <button class="type-pill" data-type="asset" onclick="selType(this)">Asset</button>
+              <button class="type-pill" data-type="style" onclick="selType(this)">Style</button>
+              <button class="type-pill" data-type="location" onclick="selType(this)">Location</button>
+              <button class="type-pill" data-type="object" onclick="selType(this)">Object</button>
+            </div>
+            <div class="chat-input-row">
+              <textarea class="chat-textarea" id="chat-input" rows="2" placeholder="Describe your character, style or asset..."></textarea>
+              <button class="btn btn-primary" onclick="sendJson()" id="btn-send" style="align-self:flex-end;">Generate</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- JSON Editor -->
+        <div class="panel ai1-right" style="display:flex;flex-direction:column;">
+          <div class="panel-hd">
+            <span class="panel-hd-title" id="preview-label">No JSON selected</span>
+            <div style="display:flex;gap:6px;">
+              <button class="btn" onclick="copyJson()" style="font-size:11px;padding:4px 10px;">Copy</button>
+              <button class="btn btn-primary" onclick="saveJson()" style="font-size:11px;padding:4px 10px;">Save</button>
+            </div>
+          </div>
+          <div class="json-editor-wrap">
+            <textarea class="json-editor" id="json-editor" placeholder="Select or generate a JSON object..."></textarea>
+          </div>
+          <div class="json-right-footer">
+            <button class="btn" onclick="toggleAlwaysOn()" id="btn-pin" style="font-size:11px;">Pin as Always-On</button>
+            <button class="btn" onclick="sendToStudio()" style="font-size:11px;color:#a89dff;border-color:rgba(123,108,255,0.3);">→ Asset Studio</button>
+            <div style="flex:1;"></div>
+            <button class="btn btn-danger" onclick="delJson()" style="font-size:11px;">Delete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ PAGE 2: ASSET STUDIO ═══ -->
+    <div class="page" id="page-ai2">
+      <div class="ai2-layout" style="width:100%">
+
+        <div class="panel ai2-left">
+          <div class="panel-hd"><span class="panel-hd-title">Generate Asset</span></div>
+          <div class="gen-form">
+            <div class="form-group">
+              <label class="form-lbl">JSON Definition</label>
+              <div class="json-picker-list" id="ai2-picker">
+                <div style="font-size:11px;color:var(--text2);padding:4px;">Build JSONs first in JSON Builder.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">Category</label>
+              <input class="form-input" id="ai2-cat" placeholder="e.g. Alex, Backgrounds...">
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">Asset Name</label>
+              <input class="form-input" id="ai2-name" placeholder="e.g. Alex – default, Alex – winter...">
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">Quality</label>
+              <select class="form-select" id="ai2-quality">
+                <option value="1K">1K — Fast preview</option>
+                <option value="2K" selected>2K — Standard</option>
+                <option value="4K">4K — High detail</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">Extra notes (optional)</label>
+              <textarea class="form-textarea" id="ai2-extra" placeholder="Any additional prompt details..." rows="4"></textarea>
+            </div>
+          </div>
+          <div class="gen-footer">
+            <button class="btn btn-primary btn-full btn-generate" id="btn-gen-asset" onclick="genAsset()">Generate Asset</button>
+            <div class="progress-wrap" id="ai2-prog-wrap" style="display:none;">
+              <div class="progress-track"><div class="progress-fill" id="ai2-prog" style="width:0%"></div></div>
+              <div class="gen-status" id="ai2-status"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel ai2-right">
+          <div class="panel-hd">
+            <span class="panel-hd-title">Asset Library</span>
+            <span class="badge badge-yellow" id="asset-count">0 assets</span>
+          </div>
+          <div class="cat-tab-row" id="asset-cat-tabs">
+            <button class="cat-tab active" onclick="filterAssets('all',this)">All</button>
+          </div>
+          <div class="asset-grid" id="asset-grid">
+            <div class="empty-state">
+              <div class="empty-ico">🎨</div>
+              <div class="empty-txt">Generate your first asset<br>using the panel on the left</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ PAGE 3: SCENE FORGE ═══ -->
+    <div class="page" id="page-ai3">
+      <div class="ai3-layout" style="width:100%">
+
+        <!-- Assets & JSONs -->
+        <div class="panel ai3-left">
+          <div class="panel-hd"><span class="panel-hd-title">Assets & JSONs</span></div>
+          <div style="flex:1;overflow-y:auto;">
+            <div class="section-lbl">JSON Objects <span style="color:var(--accent);font-size:8px;">★ always-on auto-added</span></div>
+            <div id="ai3-jsons"></div>
+            <div class="divider" style="margin:6px 12px;"></div>
+            <div class="section-lbl">Reference Images</div>
+            <div id="ai3-imgs"></div>
+          </div>
+        </div>
+
+        <!-- Scene builder -->
+        <div class="panel ai3-center">
+          <div class="panel-hd">
+            <span class="panel-hd-title">Prompt Builder</span>
+            <div style="display:flex;gap:6px;">
+              <button class="btn" onclick="clearPrompt()" style="font-size:11px;padding:4px 10px;">Clear</button>
+              <button class="btn btn-accent2" onclick="forgeScene()" id="btn-forge" style="font-size:12px;padding:6px 16px;font-weight:600;letter-spacing:1px;">FORGE SCENE</button>
+            </div>
+          </div>
+          <div class="prompt-section">
+            <div class="prompt-box" id="prompt-box" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="onDragLeave(event)">
+              <input type="text" class="p-text-input" id="p-text" placeholder="Describe the scene... then drag assets from the left">
+            </div>
+            <div class="prompt-opts">
+              <select class="form-select" id="s-ratio" style="width:auto;">
+                <option value="16:9">16:9 Landscape</option>
+                <option value="9:16">9:16 Portrait</option>
+                <option value="4:3">4:3 Standard</option>
+                <option value="3:4">3:4 Tall</option>
+              </select>
+              <select class="form-select" id="s-quality" style="width:auto;">
+                <option value="1K">1K</option>
+                <option value="2K" selected>2K</option>
+                <option value="4K">4K</option>
+              </select>
+            </div>
+            <div id="ai3-prog-wrap" style="display:none;margin-top:10px;">
+              <div class="progress-track"><div class="progress-fill" id="ai3-prog" style="width:0%"></div></div>
+              <div class="gen-status" id="ai3-status"></div>
+            </div>
+          </div>
+          <div class="drop-hint-bar">Drag JSON objects and reference images from the left panel into the prompt above</div>
+          <div class="panel-hd" style="border-top:1px solid var(--border);">
+            <span class="panel-hd-title">Scene History</span>
+            <span class="badge badge-orange" id="scene-count">0 scenes</span>
+          </div>
+          <div class="scene-grid-wrap">
+            <div class="scene-grid" id="scene-grid">
+              <div class="empty-state" style="grid-column:1/-1;">
+                <div class="empty-ico">🎬</div>
+                <div class="empty-txt">Forge your first scene above</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene detail -->
+        <div class="panel ai3-right">
+          <div class="panel-hd"><span class="panel-hd-title">Scene Detail</span></div>
+          <div class="panel-body" id="scene-detail">
+            <div class="empty-state" style="padding:40px 16px;">
+              <div class="empty-ico">🖼</div>
+              <div class="empty-txt">Click a scene to inspect it</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="statusbar">
+    <span class="sb-item" id="status-bar">Ready</span>
+    <span class="sb-item" style="margin-left:auto;color:var(--text3);">ComicForge v1.0</span>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="overlay" id="modal-settings">
+  <div class="modal">
+    <div class="modal-title">Settings</div>
+    <div class="modal-field">
+      <label class="modal-lbl">OpenAI API Key</label>
+      <input class="modal-input" type="password" id="key-openai" placeholder="sk-...">
+      <div class="modal-hint">AI 1 — JSON generation via GPT-4o</div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-lbl">Backend Server URL</label>
+      <input class="modal-input" type="text" id="key-nano" placeholder="http://localhost:5000">
+      <div class="modal-hint">ComicForge Python backend — run server.py locally (AI 2 + 3 image generation)</div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-lbl">AI 1 Model</label>
+      <select class="modal-input" id="setting-model" style="cursor:pointer;">
+        <option value="gpt-4o">GPT-4o (recommended)</option>
+        <option value="gpt-4o-mini">GPT-4o Mini (faster)</option>
+        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-settings')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="overlay" id="modal-addcat">
+  <div class="modal" style="width:320px;">
+    <div class="modal-title">New Category</div>
+    <div class="modal-field">
+      <label class="modal-lbl">Name</label>
+      <input class="modal-input" id="new-cat-input" placeholder="e.g. Alex, Backgrounds, Vehicles...">
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-addcat')">Cancel</button>
+      <button class="btn btn-primary" onclick="addCat()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- JSON Edit Modal -->
+<div class="overlay" id="modal-edit-json">
+  <div class="modal modal-wide">
+    <div class="modal-title" id="edit-json-title">Edit JSON</div>
+    <div class="modal-field">
+      <label class="modal-lbl">Name</label>
+      <input class="modal-input" id="edit-json-name" style="font-family:'DM Sans',sans-serif;">
+    </div>
+    <div class="modal-field">
+      <label class="modal-lbl">JSON Content</label>
+      <textarea class="json-edit-ta modal-input" id="edit-json-content" rows="12"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-edit-json')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditJson()">Save JSON</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const S = {
+  keys: { openai: '', nano: '' },
+  model: 'gpt-4o',
+  jsons: [],
+  assets: [],
+  scenes: [],
+  cats: ['Style','Characters','Locations','Objects'],
+  curJsonId: null,
+  tokens: [],
+  selType: 'character',
+  editingId: null,
+  assetFilter: 'all',
+  dragging: null,
+};
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+function setStatus(msg) {
+  document.getElementById('status-bar').textContent = msg;
+}
+
+function switchPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'ai2') refreshAi2Picker();
+  if (id === 'ai3') refreshAi3();
+}
+
+function selType(btn) {
+  document.querySelectorAll('.type-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  S.selType = btn.dataset.type;
+}
+
+/* ── SETTINGS ── */
+function openSettings() {
+  document.getElementById('key-openai').value = S.keys.openai;
+  document.getElementById('key-nano').value = S.keys.nano;
+  document.getElementById('setting-model').value = S.model;
+  openModal('modal-settings');
+}
+function saveSettings() {
+  S.keys.openai = document.getElementById('key-openai').value.trim();
+  S.keys.nano = document.getElementById('key-nano').value.trim() || 'http://localhost:5000';
+  S.model = document.getElementById('setting-model').value;
+  document.getElementById('ai1-model-badge').textContent = S.model;
+  // Persist keys so they survive page refresh
+  try {
+    localStorage.setItem('cf_openai_key', S.keys.openai);
+    localStorage.setItem('cf_server_url', S.keys.nano);
+    localStorage.setItem('cf_model', S.model);
+  } catch(e) {
+    console.warn('localStorage unavailable (file:// protocol?) — keys will reset on refresh. Open via http://localhost:5000 instead.');
+  }
+  closeModal('modal-settings');
+  setStatus('Settings saved');
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ── CATEGORIES ── */
+function openAddCat() { document.getElementById('new-cat-input').value=''; openModal('modal-addcat'); }
+function addCat() {
+  const n = document.getElementById('new-cat-input').value.trim();
+  if (!n) return;
+  if (!S.cats.includes(n)) S.cats.push(n);
+  closeModal('modal-addcat');
+  renderLib();
+}
+
+async function callServerGenerate(serverUrl, prompt, panel, itemId, itemType) {
+  // Call local Python backend which runs Playwright → Gemini
+  const resp = await fetch(serverUrl + '/api/generate-image', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, mode: itemType })
+  });
+
+  if (!resp.ok) {
+    throw new Error('Server error: ' + resp.status + ' ' + resp.statusText);
+  }
+
+  const data = await resp.json();
+
+  if (!data.success) {
+    // Check if retriable (Gemini refused or hallucinated)
+    if (data.retriable) {
+      // Mark item as failed-retriable so UI shows the retry message
+      const item = itemType === 'asset'
+        ? S.assets.find(x => x.id === itemId)
+        : S.scenes.find(x => x.id === itemId);
+      if (item) {
+        item.status = 'failed';
+        item.retriable = true;
+        item.errorMsg = data.error || 'Gemini did not generate an image';
+      }
+      if (itemType === 'asset') renderAssets();
+      else renderScenes();
+      document.getElementById(panel + '-status').textContent =
+        '⚠ ' + (data.error || 'No image generated') + ' — tweak your prompt and retry.';
+      setStatus('Generation failed — see prompt tips below');
+      return;
+    }
+    throw new Error(data.error || 'Generation failed');
+  }
+
+  // Success — store image
+  setP(panel, 100);
+  if (itemType === 'asset') {
+    const a = S.assets.find(x => x.id === itemId);
+    if (a) { a.imageUrl = data.image_b64; a.status = 'done'; }
+    renderAssets(); updateAssetCats();
+    setStatus('Asset ready!');
+  } else {
+    const sc = S.scenes.find(x => x.id === itemId);
+    if (sc) { sc.imageUrl = data.image_b64; sc.status = 'done'; }
+    renderScenes();
+    document.getElementById('scene-count').textContent =
+      S.scenes.length + ' scene' + (S.scenes.length !== 1 ? 's' : '');
+    setStatus('Scene forged!');
+  }
+  document.getElementById(panel + '-status').textContent = '';
+  document.getElementById(panel + '-prog-wrap').style.display = 'none';
+}
+
+// Load persisted settings from localStorage on startup
+(function loadSavedSettings() {
+  try {
+    const savedKey   = localStorage.getItem('cf_openai_key');
+    const savedUrl   = localStorage.getItem('cf_server_url');
+    const savedModel = localStorage.getItem('cf_model');
+    if (savedKey)   S.keys.openai = savedKey;
+    if (savedUrl)   S.keys.nano   = savedUrl;
+    else            S.keys.nano   = 'http://localhost:5000';
+    if (savedModel) S.model       = savedModel;
+  } catch(e) {
+    S.keys.nano = 'http://localhost:5000';
+    console.warn('localStorage blocked — open the app via http://localhost:5000 for key persistence.');
+  }
+  document.getElementById('ai1-model-badge').textContent = S.model;
+  if (!S.keys.openai) {
+    setTimeout(() => setStatus('⚙  Open Settings and add your OpenAI API key to get started'), 800);
+  } else {
+    setTimeout(() => setStatus('Ready — keys loaded from storage'), 500);
+  }
+})();
+
+renderLib();
+
+/* ── JSON LIBRARY ── */
+function renderLib() {
+  const typeIcon = {character:'👤',asset:'📦',style:'🎨',location:'🗺',object:'🔮'};
+  const aoList = document.getElementById('ao-list');
+  const catList = document.getElementById('cat-list');
+  const aos = S.jsons.filter(j => j.alwaysOn);
+
+  aoList.innerHTML = aos.length ? aos.map(j => chipHtml(j, typeIcon)).join('') :
+    '<div style="font-size:11px;color:var(--text2);padding:4px 8px 8px;">No always-on JSONs yet. Generate a Style and pin it.</div>';
+
+  catList.innerHTML = '';
+  S.cats.forEach(cat => {
+    const items = S.jsons.filter(j => j.category === cat && !j.alwaysOn);
+    const el = document.createElement('div');
+    el.className = 'cat-group';
+    el.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('catitems-${cat}', this.querySelector('.cat-toggle'))">
+        <span class="cat-header-name">
+          <span class="cat-toggle open">▶</span>
+          ${cat}
+        </span>
+        <span class="cat-count">${items.length}</span>
+      </div>
+      <div class="cat-items" id="catitems-${cat}">
+        ${items.length ? items.map(j => chipHtml(j, typeIcon)).join('') : '<div style="font-size:11px;color:var(--text3);padding:2px 4px 6px;">Empty</div>'}
+        <button class="btn-add-cat" onclick="quickAddToChat('${cat}')">+ Add to ${cat}</button>
+      </div>
+    `;
+    catList.appendChild(el);
+  });
+}
+
+function chipHtml(j, typeIcon) {
+  return `<div class="json-chip ${j.alwaysOn ? 'always-chip':''} ${S.curJsonId===j.id?'active-chip':''}"
+    draggable="true" ondragstart="onJsonDrag(event,'${j.id}')" onclick="selectJson('${j.id}')">
+    <div class="json-chip-icon">${typeIcon[j.type]||'📄'}</div>
+    <div class="json-chip-info">
+      <div class="json-chip-name">${j.name}</div>
+      <div class="json-chip-sub">${j.type} · ${j.category}</div>
+    </div>
+    ${j.alwaysOn ? '<span class="always-star">★</span>' : ''}
+    <div class="json-chip-acts">
+      <button class="icon-btn" onclick="event.stopPropagation();openEditJson('${j.id}')" title="Edit">✏</button>
+    </div>
+  </div>`;
+}
+
+function toggleCat(id, arrow) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const hidden = el.style.display === 'none';
+  el.style.display = hidden ? '' : 'none';
+  arrow.style.transform = hidden ? '' : 'rotate(0deg)';
+}
+
+function selectJson(id) {
+  S.curJsonId = id;
+  const j = S.jsons.find(x => x.id === id);
+  if (!j) return;
+  document.getElementById('preview-label').textContent = j.name;
+  document.getElementById('json-editor').value = JSON.stringify(j.data, null, 2);
+  document.getElementById('btn-pin').textContent = j.alwaysOn ? 'Unpin Always-On' : 'Pin as Always-On';
+  renderLib();
+}
+
+function saveJson() {
+  if (!S.curJsonId) return;
+  const j = S.jsons.find(x => x.id === S.curJsonId);
+  if (!j) return;
+  try {
+    j.data = JSON.parse(document.getElementById('json-editor').value);
+    setStatus('Saved: ' + j.name);
+    renderLib();
+  } catch(e) { setStatus('Error: invalid JSON syntax'); }
+}
+
+function copyJson() {
+  navigator.clipboard.writeText(document.getElementById('json-editor').value)
+    .then(() => setStatus('Copied to clipboard'));
+}
+
+function toggleAlwaysOn() {
+  if (!S.curJsonId) return;
+  const j = S.jsons.find(x => x.id === S.curJsonId);
+  if (!j) return;
+  j.alwaysOn = !j.alwaysOn;
+  document.getElementById('btn-pin').textContent = j.alwaysOn ? 'Unpin Always-On' : 'Pin as Always-On';
+  renderLib();
+  setStatus(j.alwaysOn ? `★ ${j.name} pinned as always-on` : `${j.name} unpinned`);
+}
+
+function delJson() {
+  if (!S.curJsonId) return;
+  const j = S.jsons.find(x => x.id === S.curJsonId);
+  if (!j || !confirm('Delete "' + j.name + '"?')) return;
+  S.jsons = S.jsons.filter(x => x.id !== S.curJsonId);
+  S.curJsonId = null;
+  document.getElementById('preview-label').textContent = 'No JSON selected';
+  document.getElementById('json-editor').value = '';
+  renderLib();
+}
+
+function sendToStudio() {
+  if (!S.curJsonId) return;
+  document.querySelector('.nav-btn:nth-child(2)').click();
+  setTimeout(() => {
+    const el = document.querySelector(`[data-pick="${S.curJsonId}"]`);
+    if (el) el.click();
+  }, 50);
+}
+
+function quickAddToChat(cat) {
+  document.getElementById('chat-input').focus();
+  setStatus('Describe a ' + cat + ' in the chat to generate JSON');
+}
+
+function openEditJson(id) {
+  const j = S.jsons.find(x => x.id === id);
+  if (!j) return;
+  S.editingId = id;
+  document.getElementById('edit-json-title').textContent = 'Edit: ' + j.name;
+  document.getElementById('edit-json-name').value = j.name;
+  document.getElementById('edit-json-content').value = JSON.stringify(j.data, null, 2);
+  openModal('modal-edit-json');
+}
+function saveEditJson() {
+  const j = S.jsons.find(x => x.id === S.editingId);
+  if (!j) return;
+  try {
+    j.name = document.getElementById('edit-json-name').value.trim() || j.name;
+    j.data = JSON.parse(document.getElementById('edit-json-content').value);
+    closeModal('modal-edit-json');
+    renderLib();
+    selectJson(j.id);
+    setStatus('Updated: ' + j.name);
+  } catch(e) { setStatus('Invalid JSON'); }
+}
+
+/* ── AI 1: GENERATE JSON ── */
+async function sendJson() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  if (!S.keys.openai) { addMsg('Please add your OpenAI API key in Settings first.', 'ai'); return; }
+  addMsg(text, 'user');
+  inp.value = '';
+  document.getElementById('btn-send').disabled = true;
+  const loader = addLoader();
+
+  const sys = `You are a comic book asset definition assistant. Generate detailed JSON for AI image generation consistency.
+
+For a ${S.selType}, return ONLY a valid JSON object (no markdown, no preamble) with:
+- "name": short unique identifier
+- "type": "${S.selType}"
+- "description": 1-2 sentence visual summary
+- "appearance": object with detailed visual traits (colors, features, build, clothing, distinguishing marks)
+- "art_style": object with style guidance (line_weight, shading, color_palette, rendering_style)
+- "generation_notes": special tips for the image generator to ensure consistency
+
+Be very specific and descriptive. Return ONLY valid JSON.`;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + S.keys.openai },
+      body: JSON.stringify({
+        model: S.model,
+        messages: [{ role: 'system', content: sys }, { role: 'user', content: text }],
+        max_tokens: 1400, temperature: 0.7,
+      })
+    });
+    const data = await res.json();
+    loader.remove();
+    if (!res.ok) throw new Error(data.error?.message || 'API error');
+
+    let parsed;
+    try {
+      const raw = data.choices?.[0]?.message?.content || '{}';
+      parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    } catch(e) { throw new Error('Could not parse JSON from response'); }
+
+    const name = parsed.name || (S.selType + '_' + uid());
+    const catMap = { character: 'Characters', style: 'Style', location: 'Locations', object: 'Objects', asset: 'Objects' };
+    const category = catMap[S.selType] || S.cats[0];
+    const isStyle = S.selType === 'style';
+
+    const newJ = { id: uid(), name, type: S.selType, category, data: parsed, alwaysOn: isStyle };
+    S.jsons.push(newJ);
+    renderLib();
+    selectJson(newJ.id);
+
+    addMsg(`Created "${name}"${isStyle ? ' (auto-pinned as always-on)' : ''}. Review it in the right panel, edit if needed, then send to Asset Studio.`, 'ai');
+    setStatus('JSON created: ' + name);
+
+  } catch(e) {
+    loader.remove();
+    addMsg('Error: ' + e.message, 'ai');
+    setStatus('Generation error');
+  }
+  document.getElementById('btn-send').disabled = false;
+}
+
+function addMsg(text, role) {
+  const area = document.getElementById('chat-area');
+  const el = document.createElement('div');
+  el.className = 'chat-msg ' + role;
+  el.textContent = text;
+  area.appendChild(el);
+  area.scrollTop = area.scrollHeight;
+  return el;
+}
+function addLoader() {
+  const area = document.getElementById('chat-area');
+  const el = document.createElement('div');
+  el.className = 'chat-msg ai';
+  el.innerHTML = '<div class="loading-dots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>';
+  area.appendChild(el);
+  area.scrollTop = area.scrollHeight;
+  return el;
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendJson(); }
+});
+
+/* ── AI 2: ASSET STUDIO ── */
+function refreshAi2Picker() {
+  const el = document.getElementById('ai2-picker');
+  if (!S.jsons.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--text2);padding:4px;">No JSONs yet. Create in JSON Builder.</div>';
+    return;
+  }
+  el.innerHTML = S.jsons.map(j => `
+    <div class="json-pick-row" data-pick="${j.id}" onclick="pickAi2Json('${j.id}',this)">
+      <span style="flex:1;">${j.name}</span>
+      <span class="badge badge-purple">${j.type}</span>
+    </div>`).join('');
+}
+
+function pickAi2Json(id, el) {
+  document.querySelectorAll('.json-pick-row').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  const j = S.jsons.find(x => x.id === id);
+  if (j) {
+    if (!document.getElementById('ai2-cat').value) document.getElementById('ai2-cat').value = j.category;
+    if (!document.getElementById('ai2-name').value) document.getElementById('ai2-name').value = j.name + ' – front';
+  }
+}
+
+async function genAsset() {
+  const picked = document.querySelector('.json-pick-row.selected');
+  if (!picked) { setStatus('Select a JSON definition first'); return; }
+  const j = S.jsons.find(x => x.id === picked.dataset.pick);
+  if (!j) return;
+  const cat = document.getElementById('ai2-cat').value.trim() || j.category;
+  const name = document.getElementById('ai2-name').value.trim() || j.name;
+  const quality = document.getElementById('ai2-quality').value;
+  const extra = document.getElementById('ai2-extra').value.trim();
+
+  const serverUrl = S.keys.nano || 'http://localhost:5000';
+
+  const btn = document.getElementById('btn-gen-asset');
+  btn.disabled = true;
+  const pw = document.getElementById('ai2-prog-wrap');
+  pw.style.display = '';
+  setP('ai2', 5);
+  document.getElementById('ai2-status').textContent = 'Submitting...';
+
+  const prompt = `Comic book reference sheet. White background only.
+Character/asset definition: ${JSON.stringify(j.data)}
+${j.type === 'character' ? 'Show 4 views in a 2x2 grid: front, back, left side, right side.' : 'Show multiple angles on a plain white background.'}
+Style: flat comic book illustration, clean bold outlines. No backgrounds, no props, no shadows.
+${extra}`;
+
+  const pid = uid();
+  S.assets.push({ id: pid, name, category: cat, jsonId: j.id, type: j.type, imageUrl: null, status: 'generating', quality });
+  renderAssets();
+  updateAssetCats();
+
+  try {
+    setP('ai2', 20);
+    document.getElementById('ai2-status').textContent = 'Generating asset... (20-60s)';
+    await callServerGenerate(serverUrl, prompt, 'ai2', pid, 'asset');
+    btn.disabled = false;
+    pw.style.display = 'none';
+
+  } catch(e) {
+    const a = S.assets.find(x => x.id === pid);
+    if (a) a.status = 'failed';
+    renderAssets();
+    document.getElementById('ai2-status').textContent = 'Error: ' + e.message;
+    btn.disabled = false;
+    setStatus('Asset generation failed');
+  }
+}
+
+
+function setP(panel, val) {
+  document.getElementById(panel + '-prog').style.width = val + '%';
+}
+
+function renderAssets() {
+  const grid = document.getElementById('asset-grid');
+  const items = S.assetFilter === 'all' ? S.assets : S.assets.filter(a => a.category === S.assetFilter);
+  document.getElementById('asset-count').textContent = S.assets.length + ' asset' + (S.assets.length !== 1 ? 's' : '');
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-ico">🎨</div><div class="empty-txt">No assets yet</div></div>';
+    return;
+  }
+  grid.innerHTML = items.map(a => `
+    <div class="asset-card">
+      <div class="asset-thumb">
+        ${a.status==='generating' ? '<div class="spinner"></div>' : a.status==='failed' ? `<div style="padding:8px;text-align:center;"><span style="font-size:11px;color:var(--danger);">No image generated</span>${a.retriable ? '<br><span style="font-size:10px;color:var(--text2);">Tweak prompt & retry</span>' : ''}</div>` : `<img src="${a.imageUrl}" alt="${a.name}" loading="lazy">`}
+      </div>
+      <div class="asset-info">
+        <div class="asset-name">${a.name}</div>
+        <div class="asset-meta">${a.category} · ${a.quality}</div>
+      </div>
+    </div>`).join('');
+}
+
+function updateAssetCats() {
+  const cats = ['all', ...new Set(S.assets.map(a=>a.category))];
+  const el = document.getElementById('asset-cat-tabs');
+  el.innerHTML = cats.map(c => `<button class="cat-tab ${c===S.assetFilter?'active':''}" onclick="filterAssets('${c}',this)">${c==='all'?'All':c}</button>`).join('');
+}
+function filterAssets(cat, btn) {
+  S.assetFilter = cat;
+  document.querySelectorAll('#asset-cat-tabs .cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderAssets();
+}
+
+/* ── AI 3: SCENE FORGE ── */
+function refreshAi3() {
+  const jl = document.getElementById('ai3-jsons');
+  const il = document.getElementById('ai3-imgs');
+  const aos = S.jsons.filter(j => j.alwaysOn);
+  const regs = S.jsons.filter(j => !j.alwaysOn);
+
+  jl.innerHTML = [...aos, ...regs].map(j => `
+    <div class="ai3-asset" draggable="true" ondragstart="onDragAsset(event,'json','${j.id}')">
+      <div class="ai3-thumb">${j.alwaysOn ? '★' : '{}'}</div>
+      <span class="ai3-name">${j.name}</span>
+      ${j.alwaysOn ? '<span class="ai3-auto-badge">AUTO</span>' : ''}
+    </div>`).join('') || '<div style="font-size:11px;color:var(--text2);padding:8px 12px;">No JSONs yet.</div>';
+
+  il.innerHTML = S.assets.filter(a => a.status==='done' && a.imageUrl).map(a => `
+    <div class="ai3-asset" draggable="true" ondragstart="onDragAsset(event,'img','${a.id}')">
+      <div class="ai3-thumb"><img src="${a.imageUrl}" alt="${a.name}"></div>
+      <span class="ai3-name">${a.name}</span>
+    </div>`).join('') || '<div style="font-size:11px;color:var(--text2);padding:8px 12px;">No assets yet.</div>';
+
+  injectAlwaysOns();
+}
+
+function injectAlwaysOns() {
+  const aos = S.jsons.filter(j => j.alwaysOn);
+  const noAo = S.tokens.filter(t => !t.alwaysOn);
+  S.tokens = [
+    ...aos.map(j => ({ id: uid(), refId: j.id, kind: 'json', name: j.name, alwaysOn: true })),
+    ...noAo,
+  ];
+  renderPrompt();
+}
+
+function onJsonDrag(event, id) { S.dragging = { kind: 'json', id }; event.dataTransfer.effectAllowed = 'copy'; }
+function onDragAsset(event, kind, id) { S.dragging = { kind, id }; event.dataTransfer.effectAllowed = 'copy'; }
+function onDragOver(e) { e.preventDefault(); document.getElementById('prompt-box').classList.add('dragover'); }
+function onDragLeave(e) { document.getElementById('prompt-box').classList.remove('dragover'); }
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('prompt-box').classList.remove('dragover');
+  if (!S.dragging) return;
+  const { kind, id } = S.dragging;
+  S.dragging = null;
+  if (kind === 'json') {
+    if (S.tokens.find(t => t.refId === id)) return;
+    const j = S.jsons.find(x => x.id === id);
+    if (j) S.tokens.push({ id: uid(), refId: id, kind: 'json', name: j.name, alwaysOn: false });
+  } else if (kind === 'img') {
+    if (S.tokens.find(t => t.refId === id)) return;
+    const a = S.assets.find(x => x.id === id);
+    if (a) S.tokens.push({ id: uid(), refId: id, kind: 'img', name: a.name, imgUrl: a.imageUrl, alwaysOn: false });
+  }
+  renderPrompt();
+}
+
+function renderPrompt() {
+  const box = document.getElementById('prompt-box');
+  const prev = document.getElementById('p-text')?.value || '';
+  box.innerHTML = '';
+  S.tokens.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'p-token ' + (t.alwaysOn ? 't-auto' : t.kind === 'json' ? 't-json' : 't-img');
+    el.innerHTML = `<span>${t.name}</span>${!t.alwaysOn ? `<span class="p-token-rm" onclick="rmToken('${t.id}')">✕</span>` : ''}`;
+    box.appendChild(el);
+  });
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.className = 'p-text-input'; inp.id = 'p-text';
+  inp.placeholder = S.tokens.length ? 'Continue describing the scene...' : 'Describe the scene... drag assets from the left';
+  inp.value = prev;
+  box.appendChild(inp);
+}
+
+function rmToken(tid) { S.tokens = S.tokens.filter(t => t.id !== tid); renderPrompt(); }
+function clearPrompt() {
+  S.tokens = S.jsons.filter(j => j.alwaysOn).map(j => ({ id: uid(), refId: j.id, kind: 'json', name: j.name, alwaysOn: true }));
+  renderPrompt();
+  const inp = document.getElementById('p-text');
+  if (inp) inp.value = '';
+}
+
+async function forgeScene() {
+  const inp = document.getElementById('p-text');
+  const text = inp?.value.trim() || '';
+  if (!text && !S.tokens.filter(t=>!t.alwaysOn).length) { setStatus('Add a description or drop assets into the prompt'); return; }
+  const serverUrl = S.keys.nano || 'http://localhost:5000';
+
+  const ratio = document.getElementById('s-ratio').value;
+  const quality = document.getElementById('s-quality').value;
+  const jToks = S.tokens.filter(t => t.kind === 'json');
+  const iToks = S.tokens.filter(t => t.kind === 'img');
+
+  const jsonCtx = jToks.map(t => {
+    const j = S.jsons.find(x => x.id === t.refId);
+    return j ? JSON.stringify(j.data) : '';
+  }).filter(Boolean).join('\n\n');
+
+  const prompt = `Comic book panel illustration.
+${jsonCtx ? 'Asset definitions to follow strictly:\n' + jsonCtx + '\n\n' : ''}Scene: ${text}
+Style: comic book panel, bold outlines, consistent with style definitions above. Dynamic composition, cinematic framing.`;
+
+  const imgUrls = iToks.map(t => t.imgUrl).filter(Boolean);
+  const btn = document.getElementById('btn-forge');
+  btn.disabled = true;
+  const pw = document.getElementById('ai3-prog-wrap');
+  pw.style.display = '';
+  setP('ai3', 5);
+  document.getElementById('ai3-status').textContent = 'Submitting scene...';
+
+  const pid = uid();
+  const tokSnap = JSON.parse(JSON.stringify(S.tokens));
+  S.scenes.push({ id: pid, prompt: text, tokens: tokSnap, imageUrl: null, status: 'generating', ratio, quality, created: new Date().toISOString() });
+  renderScenes();
+
+  try {
+    setP('ai3', 20);
+    document.getElementById('ai3-status').textContent = 'Generating scene...';
+    await callServerGenerate(serverUrl, prompt, 'ai3', pid, 'scene');
+    btn.disabled = false;
+    pw.style.display = 'none';
+    btn.disabled = false;
+    document.getElementById('scene-count').textContent = S.scenes.length + ' scene' + (S.scenes.length !== 1 ? 's' : '');
+  } catch(e) {
+    const sc = S.scenes.find(x => x.id === pid);
+    if (sc) sc.status = 'failed';
+    renderScenes();
+    document.getElementById('ai3-status').textContent = 'Error: ' + e.message;
+    pw.style.display = 'none';
+    btn.disabled = false;
+    setStatus('Scene failed');
+  }
+}
+
+function renderScenes() {
+  const grid = document.getElementById('scene-grid');
+  document.getElementById('scene-count').textContent = S.scenes.length + ' scene' + (S.scenes.length !== 1 ? 's' : '');
+  if (!S.scenes.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-ico">🎬</div><div class="empty-txt">Forge your first scene above</div></div>';
+    return;
+  }
+  grid.innerHTML = [...S.scenes].reverse().map(s => {
+    const jt = (s.tokens||[]).filter(t=>t.kind==='json').map(t=>`<span class="s-tag j">${t.name}</span>`).join('');
+    const it = (s.tokens||[]).filter(t=>t.kind==='img').map(t=>`<span class="s-tag i">${t.name}</span>`).join('');
+    const d = new Date(s.created);
+    return `<div class="scene-card" onclick="showDetail('${s.id}')">
+      <div class="scene-thumb-wrap">
+        ${s.status==='generating' ? '<div class="spinner"></div>' : s.status==='failed' ? `<div style="padding:8px;text-align:center;"><span style="font-size:11px;color:var(--danger);">No image</span>${s.retriable ? '<br><span style="font-size:10px;color:var(--text2);">Tweak prompt & retry</span>' : ''}</div>` : `<img src="${s.imageUrl}" alt="scene" loading="lazy">`}
+      </div>
+      <div class="scene-body">
+        <div class="scene-preview">${s.prompt||'(no description)'}</div>
+        <div class="scene-tags">${jt}${it}</div>
+        <div class="scene-date">${d.toLocaleDateString()} ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showDetail(id) {
+  const s = S.scenes.find(x => x.id === id);
+  if (!s) return;
+  const jt = (s.tokens||[]).filter(t=>t.kind==='json');
+  const it = (s.tokens||[]).filter(t=>t.kind==='img');
+  document.getElementById('scene-detail').innerHTML = `
+    ${s.imageUrl ? `<img class="detail-img" src="${s.imageUrl}" alt="scene">` : `<div style="aspect-ratio:16/9;background:var(--bg3);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text2);margin-bottom:14px;">${s.status}</div>`}
+    <div class="detail-section">
+      <div class="detail-lbl">Prompt</div>
+      <div class="detail-text">${s.prompt||'—'}</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-lbl">JSONs used</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">${jt.length ? jt.map(t=>`<span class="s-tag j">${t.name}</span>`).join('') : '<span style="font-size:11px;color:var(--text2);">None</span>'}</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-lbl">Images used</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">${it.length ? it.map(t=>`<span class="s-tag i">${t.name}</span>`).join('') : '<span style="font-size:11px;color:var(--text2);">None</span>'}</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-lbl">Settings</div>
+      <div style="font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;">${s.ratio} · ${s.quality} · ${new Date(s.created).toLocaleString()}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="btn btn-primary" style="font-size:12px;" onclick="regenScene('${id}')">Regenerate</button>
+      ${s.imageUrl ? `<a href="${s.imageUrl}" target="_blank" class="btn" style="font-size:12px;">Open ↗</a>` : ''}
+    </div>
+  `;
+}
+
+function regenScene(id) {
+  const s = S.scenes.find(x => x.id === id);
+  if (!s) return;
+  S.tokens = JSON.parse(JSON.stringify(s.tokens||[]));
+  renderPrompt();
+  setTimeout(() => {
+    const inp = document.getElementById('p-text');
+    if (inp) inp.value = s.prompt||'';
+  }, 10);
+  if (s.ratio) document.getElementById('s-ratio').value = s.ratio;
+  if (s.quality) document.getElementById('s-quality').value = s.quality;
+  setStatus('Scene loaded — hit Forge Scene to regenerate');
+}
+
+renderLib();
+</script>
+</body>
+</html>

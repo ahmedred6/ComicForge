@@ -1,0 +1,55 @@
+# ========================
+# 🔐 Secrets & Environment
+# ========================
+.env
+.env.*
+*.env
+
+# ========================
+# 🐍 Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ========================
+# 🧪 Virtual Environments
+# ========================
+.venv/
+venv/
+env/
+ENV/
+
+# ========================
+# 📦 Build / Distribution
+# ========================
+build/
+dist/
+*.egg-info/
+
+# ========================
+# 🧾 Logs & Runtime Files
+# ========================
+*.log
+*.sqlite3
+
+# ========================
+# 🖥️ OS Files
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# 🧠 IDE / Editor
+# ========================
+.vscode/
+.idea/
+
+# ========================
+# 📸 Your project-specific
+# ========================
+# (optional depending on your needs)
+# If images are generated dynamically:
+# comicforge_images/
+
+# If you WANT to keep images → comment the above line
